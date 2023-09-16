@@ -1,4 +1,96 @@
-body {
-    width: 200px;
-    height: 250px;
+/* variables */
+/* background color */
+:root {
+    --dark:                 #2a2a2a;
+    --dark-in:              linear-gradient(145deg, #38393b, #424346);
+    --dark-out:             linear-gradient(145deg, #424346, #38393b);
+    --dark-shadow:           6px 6px 10px #38393b, -6px -6px 10px #444548;
+    --dark-input-shadow:    inset 7px 7px 15px #1f1f1f, inset -7px -7px 15px #3d3d3d;
+    --dark-text:            #ffffff;
+
+    --light:                #f7f7f7;
+    --light-in:             linear-gradient(145deg, #dedede #34a643);
+    --light-out:            linear-gradient(145deg, #ffffff, #dedede);
+    --light-shadow:         6px 6px 10px #dedede, -6px -6px 10px #ffffff;
+    --light-input-shadow:   inset 7px 7px 15px #e3e3e3, inset -7px -7px 15px #ffffff;
+    --light-text:           #000000;
+
+    /* using light theme */
+    --theme: var(--light);
+    --theme-in: var(--light-in);
+    --theme-out: var(--light-out);
+    --theme-shadow: var(--light-shadow);
+    --theme-input-shadow: var(--light-input-shadow);
+
+    /* using dark theme
+    --theme: var(--dark);
+    --theme-text: var(--dark-text);
+    --theme-in: var(--dark-in);
+    --theme-out: var(--dark-out);
+    --theme-shadow: var(--dark-shadow);
+    --theme-input-shadow: var(--dark-input-shadow); */
 }
+
+
+body {
+    width: 300px;
+    height: 400px;
+    background: var(--theme);
+    padding: 20px 20px 20px 20px;
+    font-family: sans-serif;
+    font-size: 18px;
+    margin-right: 20px;
+    margin-left: 20px;
+    color:var(--theme-text);
+
+}
+
+/* neumorphic beige input type text field */
+.neuInput {
+    border: 0px;
+    width: 100%;
+    height: 30px;
+    padding: 8px;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 17px;
+    font-size: 18px;
+    border: 0px;
+    color: var(--theme-text);
+    background: var(--theme);
+    box-shadow: var(--theme-input-shadow)
+}
+
+/* neumorphic beige button convex */
+.neuButton {
+    border: 0px;
+    width: 100%;
+    height: 50px;
+    padding: 8px;
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 17px;
+    color: var(--theme-text);
+    background: var(--theme-out);
+    box-shadow: var(--theme-shadow)
+
+}
+/*  neumoorphic beige button concave */
+.neuButton:active {
+    background: var(--theme-in);
+    box-shadow: var(--theme-shadow)
+}
+/* change cursor when hover */
+.neuButton:hover {
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+}
+
+
+
