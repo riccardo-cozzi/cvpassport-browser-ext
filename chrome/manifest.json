@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "CV Passport",
+    "version": "0.1",
+    "description": "Automatize your application process with A.I. by filling out your CV with one click.",
+    "permissions": [
+      "scripting", "activeTab", "tabs", "storage", "clipboardWrite"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "icons": {
+      "16": "icon-dev.png",
+      "48": "icon-dev.png",
+      "128": "icon-dev.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
