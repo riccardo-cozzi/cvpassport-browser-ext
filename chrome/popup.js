@@ -15,23 +15,25 @@ const inject = (f, args=[]) => {
     })
 }
 
+/**
+ * Execute the given function f when the element is clicked
+ * @param {*} element 
+ * @param {*} f 
+ * @param {*} args 
+ */
 const onClick = (element, f, args=[]) => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true })    
     .then((result) => {
         element.addEventListener("click", function(){
             chrome.scripting.executeScript({
                 target : {tabId : result[0].id},
-                func: f,
-                args: args
+                func: f(args),
+                // args: args // qui non ho capito perché ma.. così va
             })
         })
     })
 }
 
-
-function fill_form() {
-    
-}
 
 class Page {
 
@@ -46,7 +48,7 @@ class Page {
     static fillForm() {
         inject(() => {
             let data = {
-                nome_form: "lollo4", 
+                nome_form: "loll5", 
                 email_form: "lollo@gmail.com"
             }
         
@@ -63,35 +65,23 @@ class Page {
         },
         [])
     }
+
 }
 
 function listen() {
 
-    var btn = document.getElementById("fill_form_btn")
-    if (btn === null) {
+    var formButton = document.getElementById("fill_form_btn")
+    var htmlBtn = document.getElementById("get_html_btn")
+    if (formButton === null || htmlBtn === null) {
         document.getElementById("error").innerHTML = "ops"
-        console.error("btn not found")
+        console.error("form btn not found")
     }
     
     Page.log("This message is on the web page")
+    onClick(formButton, Page.fillForm)
+    console.log("html btn found")
+    onClick(htmlBtn, Page.log, ["html"])
 
-    try {
-        chrome.tabs.query({ active: true, lastFocusedWindow: true })    
-        .then((result) => {
-            btn.addEventListener('click', function(){
-                chrome.scripting.executeScript({
-                    target : {tabId : result[0].id},
-                    func: Page.fillForm(),
-                })
-            })
-        })
-        // inject(fill_form, [])
-        
-    } catch (error) { 
-        console.error(error)
-    }
-    
-    
 }
 
 listen()
