@@ -35,6 +35,7 @@ const onClick = (element, f, args=[]) => {
 }
 
 
+
 class Page {
 
     constructor() {
@@ -45,45 +46,48 @@ class Page {
         inject(print, [message])
     }
 
-    static fillForm() {
+    static action() {
         inject(() => {
-            let data = {
-                nome_form: "loll5", 
-                email_form: "lollo@gmail.com"
-            }
-        
-            console.log("Injecting data", data)
-        
-            for (const [id, value] of Object.entries(data)) {
-                var element = document.getElementById(id)
-                if (element != null) {
-                    element.value = value
-                } else {
-                    console.error("Element not found: " + id)
+            var html = document.getElementsByTagName("html")[0].innerHTML
+            fetch("http://34.252.236.219:8000/compile", {
+                method: "POST",
+                body: { html: html },
+                headers: { "Content-type": "application/json; charset=UTF-8" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Injecting data", data)
+                for (const [id, value] of Object.entries(data)) {
+                    var element = document.getElementById(id)
+                    if (!element) {
+                        console.error("Element not found: " + id)
+                    } else {
+                        element.value = value
+                    }
                 }
-            }
+            })
         },
         [])
     }
-
 }
 
-function listen() {
-
-    var formButton = document.getElementById("fill_form_btn")
-    var htmlBtn = document.getElementById("get_html_btn")
-    if (formButton === null || htmlBtn === null) {
-        document.getElementById("error").innerHTML = "ops"
-        console.error("form btn not found")
-    }
+class Popup {
     
-    Page.log("This message is on the web page")
-    onClick(formButton, Page.fillForm)
-    console.log("html btn found")
-    onClick(htmlBtn, Page.log, ["html"])
+        constructor() {
+            throw new Error("This class cannot be instantiated. Use static methods instead.")
+        }
+    
+        static log(message) {
+            document.getElementById("logger").innerHTML = message
+        }
+}
+// ----------------------------------------------
 
+// Get the components in the popup
+var popupActionBtn = document.getElementById("action_btn")
+if (popupActionBtn === null) {
+    document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
+    console.error("form btn not found")
 }
 
-listen()
-
-
+onClick(popupActionBtn, Page.action)
