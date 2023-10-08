@@ -1,7 +1,7 @@
 {
   "name": "webapp",
   "version": "0.1.0",
-  "homepage": "https://{riccardo-cozzi}.github.io/{repo-name}",
+  "homepage": "https://riccardo-cozzi.github.io/cvpassport-browser-ext/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",

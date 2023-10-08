@@ -46,6 +46,12 @@ class Page {
         inject(print, [message])
     }
 
+    static openWebapp() {
+        inject(() => {
+            window.open("https://riccardo-cozzi.github.io/cvpassport-browser-ext", '_blank');
+        })
+    }
+
     static action() {
         inject(() => {
             var html = document.getElementsByTagName("html")[0].innerHTML
@@ -89,5 +95,10 @@ if (popupActionBtn === null) {
     document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
     console.error("form btn not found")
 }
+var settginsLink = document.getElementById("settings")
+if (settginsLink === null) {
+    document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
+}
 
 onClick(popupActionBtn, Page.action)
+onClick(settginsLink, Page.openWebapp)
