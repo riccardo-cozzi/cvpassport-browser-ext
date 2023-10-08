@@ -11,38 +11,6 @@ import ProfilePage from '../pages/ProfilePage';
 import SettingsPage from '../pages/SettingsPage';
 import AboutPage from '../pages/AboutPage';
 
-// function TabPanel(props) {
-//   const { children, value, index, ...other } = props;
-
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`vertical-tabpanel-${index}`}
-//       aria-labelledby={`vertical-tab-${index}`}
-//       {...other}
-//     >
-//       {value === index && (
-//         <Box>
-//           <Typography>{children}</Typography>
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
-
-// TabPanel.propTypes = {
-//   children: PropTypes.node,
-//   index: PropTypes.number.isRequired,
-//   value: PropTypes.number.isRequired,
-// };
-
-// function a11yProps(index) {
-//   return {
-//     id: `vertical-tab-${index}`,
-//     'aria-controls': `vertical-tabpanel-${index}`,
-//   };
-// }
 
 export default function PageContainer() {
   const [value, setValue] = React.useState(0);
