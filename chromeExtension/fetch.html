@@ -1,0 +1,35 @@
+<html>
+    url: <br>
+    <textarea id="url" cols="50"></textarea>
+    <br><button onclick="request()">Fetch</button>
+    <br> response:<br>
+    <textarea id="response" rows="10" cols="50"></textarea>
+    
+    <script>
+        var html = "<input type='text' id='form_name'>"
+        document.getElementById("url").textContent = "https://34.252.236.219/compile";
+        
+        function request() {
+            var url = document.getElementById("url").value;
+            console.log("fetching: ", url)
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({ "html": html }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then((response) => {
+                if (response.ok) {
+                    console.log("OK: ", response);
+                    return response;
+                } else {
+                    throw new Error("Something went wrong");
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById("response").textContent = JSON.stringify(data);
+            })
+        }
+        
+    </script>
+</html>

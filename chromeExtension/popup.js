@@ -55,23 +55,51 @@ class Page {
     static action() {
         inject(() => {
             var html = document.getElementsByTagName("html")[0].innerHTML
-            fetch("http://34.252.236.219:8000/compile", {
+            console.log("Requesting...")
+
+            // Send the request
+            fetch("https://34.252.236.219/compile", {
                 method: "POST",
-                body: { html: html },
-                headers: { "Content-type": "application/json; charset=UTF-8" }
+                body: JSON.stringify({ "html": html }),
+                headers: { "Content-Type": "application/json" }
             })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then(response => {
+                let data = response.result
+                // Fill te form
                 console.log("Injecting data", data)
-                for (const [id, value] of Object.entries(data)) {
+                for (const [field, id] of Object.entries(data)) {
                     var element = document.getElementById(id)
                     if (!element) {
                         console.error("Element not found: " + id)
                     } else {
-                        element.value = value
+                        element.value = field
                     }
                 }
             })
+            // fetch("https://official-joke-api.appspot.com/random_joke")
+            // .then(response => console.log(response))
+            // .then(response => {
+            //     data = {
+            //         "form_title": "Dr",
+            //         "form_name": "Riccardo",
+            //         "form_surname": "Cozzi",
+            //         "form_email": "ricardo.cozzi@gmail.com",
+            //         "form_gender": "male",
+            //         "form_phone": "+39 333 1234567",
+            //         "form_address": "Via Roma 1, 20100 Milano",
+            //     }
+            //     // Fill te form
+            //     console.log("Injecting data", data)
+            //     for (const [id, value] of Object.entries(data)) {
+            //         var element = document.getElementById(id)
+            //         if (!element) {
+            //             console.error("Element not found: " + id)
+            //         } else {
+            //             element.value = value
+            //         }
+            //     }
+            // })
         },
         [])
     }
