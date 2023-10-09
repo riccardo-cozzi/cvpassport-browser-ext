@@ -52,23 +52,50 @@ class Page {
         })
     }
 
+    static download() {
+        inject(() => {
+            var element = document.createElement('a');
+            var html = document.getElementsByTagName("html")[0].innerHTML
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(html));
+            element.setAttribute('download', "page.html");
+          
+            element.style.display = 'none';
+            document.body.appendChild(element);
+          
+            element.click();
+          
+            document.body.removeChild(element);
+        })
+    }
+
     static action() {
+        document.getElementById("logger").innerHTML = document.getElementsByTagName("html")[0].innerHTML
+        
+        
         inject(() => {
             var html = document.getElementsByTagName("html")[0].innerHTML
-            console.log("Requesting...")
+            var serverUrl = "https://boyscaverna.mooo.com/compile"
+            console.log("Requesting url...", serverUrl)
 
             // Send the request
-            fetch("https://34.252.236.219/compile", {
+            fetch(serverUrl, {
                 method: "POST",
                 body: JSON.stringify({ "html": html }),
                 headers: { "Content-Type": "application/json" }
             })
-            .then((response) => response.json())
+            .then(response => {
+                console.log("Response received:\n", response)
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) })
+                }
+                console.log("Response ok")
+                return response.json()
+            })
             .then(response => {
                 let data = response.result
-                // Fill te form
+                // Fill the form
                 console.log("Injecting data", data)
-                for (const [field, id] of Object.entries(data)) {
+                for (const [id, field] of Object.entries(data)) {
                     var element = document.getElementById(id)
                     if (!element) {
                         console.error("Element not found: " + id)
@@ -77,29 +104,10 @@ class Page {
                     }
                 }
             })
-            // fetch("https://official-joke-api.appspot.com/random_joke")
-            // .then(response => console.log(response))
-            // .then(response => {
-            //     data = {
-            //         "form_title": "Dr",
-            //         "form_name": "Riccardo",
-            //         "form_surname": "Cozzi",
-            //         "form_email": "ricardo.cozzi@gmail.com",
-            //         "form_gender": "male",
-            //         "form_phone": "+39 333 1234567",
-            //         "form_address": "Via Roma 1, 20100 Milano",
-            //     }
-            //     // Fill te form
-            //     console.log("Injecting data", data)
-            //     for (const [id, value] of Object.entries(data)) {
-            //         var element = document.getElementById(id)
-            //         if (!element) {
-            //             console.error("Element not found: " + id)
-            //         } else {
-            //             element.value = value
-            //         }
-            //     }
-            // })
+            .catch(err => {
+                console.error('Errore dal server:', err);
+             });
+            
         },
         [])
     }
@@ -127,6 +135,11 @@ var settginsLink = document.getElementById("settings")
 if (settginsLink === null) {
     document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
 }
+var download = document.getElementById("download_btn")
+if (download === null) {
+    document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
+}
 
 onClick(popupActionBtn, Page.action)
 onClick(settginsLink, Page.openWebapp)
+onClick(download, Page.download)
