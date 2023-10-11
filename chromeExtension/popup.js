@@ -49,7 +49,8 @@ class Page {
     static openWebapp() {
         inject(() => {
             window.open("https://riccardo-cozzi.github.io/cvpassport-browser-ext", '_blank');
-        })
+        }, 
+        [])
     }
 
     static download() {
@@ -65,7 +66,7 @@ class Page {
             element.click();
           
             document.body.removeChild(element);
-        })
+        }, [])
     }
 
     static action() {
@@ -94,7 +95,6 @@ class Page {
             .then(response => {
                 let data = response.result
                 // Fill the form
-                console.log("Injecting data", data)
                 for (const [id, field] of Object.entries(data)) {
                     var element = document.getElementById(id)
                     if (!element) {
@@ -111,6 +111,21 @@ class Page {
         },
         [])
     }
+
+    static fillField(args) {
+        
+        var fieldId = args[0].value
+        var fieldValue = args[1].value
+        
+        inject((id, val) => {
+            var element = document.getElementById(id)
+            if (!element) {
+                alert("Element not found: " + id)
+            } else {
+                element.value = val
+            }
+        }, [fieldId, fieldValue])
+    }
 }
 
 class Popup {
@@ -126,20 +141,28 @@ class Popup {
 // ----------------------------------------------
 
 // Get the components in the popup
-var popupActionBtn = document.getElementById("action_btn")
-if (popupActionBtn === null) {
-    document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
-    console.error("form btn not found")
+var logger = document.getElementById("popup_logger")
+if (logger === null) {
+    alert("Logger not found. Extension can't work")
 }
-var settginsLink = document.getElementById("settings")
-if (settginsLink === null) {
-    document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
-}
+var popupActionBtn = document.getElementById("popup_actionButton")
+if (popupActionBtn === null) logger.innerHTML += "\n[ERROR] Main button not found"
+var settginsLink = document.getElementById("popup_settingsLink")
+if (settginsLink === null) logger.innerHTML += "\n[ERROR] Settings link not found"
 var download = document.getElementById("download_btn")
-if (download === null) {
-    document.getElementById("logger").innerHTML = "[ERROR] Main button not found"
-}
+if (download === null) logger.innerHTML += "\n[ERROR] Download button not found"
+
+var tagNameField = document.getElementById("popup_tagName")
+if (tagNameField === null) logger.innerHTML += "\n[ERROR] Tag name field not found"
+var tagValueField = document.getElementById("popup_tagValue")
+if (tagValueField === null) logger.innerHTML += "\n[ERROR] Tag value field not found"
+
+var fillFieldBtn = document.getElementById("popup_fillFieldButton")
+if (fillFieldBtn === null) logger.innerHTML += "\n[ERROR] Fill field button not found"
+
+
 
 onClick(popupActionBtn, Page.action)
 onClick(settginsLink, Page.openWebapp)
 onClick(download, Page.download)
+onClick(fillFieldBtn, Page.fillField, [tagNameField, tagValueField])
