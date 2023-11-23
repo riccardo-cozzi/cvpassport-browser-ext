@@ -42,10 +42,17 @@ class Page {
         throw new Error("This class cannot be instantiated. Use static methods instead.")
     }
     
+    /**
+     * Print the given message in the console
+     * @param {*} message 
+     */
     static log(message) {
         inject(print, [message])
     }
 
+    /**
+     * Open the webapp page in a new tab
+     */
     static openWebapp() {
         inject(() => {
             window.open("https://riccardo-cozzi.github.io/cvpassport-browser-ext", '_blank');
@@ -53,6 +60,9 @@ class Page {
         [])
     }
 
+    /**
+     * Download the current page html
+     */
     static download() {
         inject(() => {
             var element = document.createElement('a');
@@ -69,10 +79,11 @@ class Page {
         }, [])
     }
 
-    static action() {
+    /**
+     * Call the API to get the data and fill the form
+     */
+    static callAPI() {
         document.getElementById("logger").innerHTML = document.getElementsByTagName("html")[0].innerHTML
-        
-        
         inject(() => {
             var html = document.getElementsByTagName("html")[0].innerHTML
             var serverUrl = "https://boyscaverna.mooo.com/compile"
@@ -94,7 +105,8 @@ class Page {
             })
             .then(response => {
                 let data = response.result
-                // Fill the form
+                
+                // Fill the form with the data received
                 for (const [id, field] of Object.entries(data)) {
                     var element = document.getElementById(id)
                     if (!element) {
@@ -107,16 +119,15 @@ class Page {
             .catch(err => {
                 console.error('Errore dal server:', err);
              });
-            
         },
         [])
     }
 
+    /**
+     * Fill the field with the given value
+     * @param {*} args args = [fieldId, fieldValue]
+     */
     static fillField(args) {
-        
-        var fieldId = args[0].value
-        var fieldValue = args[1].value
-        
         inject((id, val) => {
             var element = document.getElementById(id)
             if (!element) {
@@ -124,7 +135,7 @@ class Page {
             } else {
                 element.value = val
             }
-        }, [fieldId, fieldValue])
+        }, [args[0].value, args[1].value])
     }
 }
 
@@ -151,18 +162,15 @@ var settginsLink = document.getElementById("popup_settingsLink")
 if (settginsLink === null) logger.innerHTML += "\n[ERROR] Settings link not found"
 var download = document.getElementById("download_btn")
 if (download === null) logger.innerHTML += "\n[ERROR] Download button not found"
-
 var tagNameField = document.getElementById("popup_tagName")
 if (tagNameField === null) logger.innerHTML += "\n[ERROR] Tag name field not found"
 var tagValueField = document.getElementById("popup_tagValue")
 if (tagValueField === null) logger.innerHTML += "\n[ERROR] Tag value field not found"
-
 var fillFieldBtn = document.getElementById("popup_fillFieldButton")
 if (fillFieldBtn === null) logger.innerHTML += "\n[ERROR] Fill field button not found"
 
-
-
-onClick(popupActionBtn, Page.action)
+// Set the listeners to the components of the popup
+onClick(popupActionBtn, Page.callAPI)
 onClick(settginsLink, Page.openWebapp)
 onClick(download, Page.download)
 onClick(fillFieldBtn, Page.fillField, [tagNameField, tagValueField])
