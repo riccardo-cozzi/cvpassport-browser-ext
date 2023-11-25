@@ -1,3 +1,5 @@
+
+
 // se passo console.log al metodo executeScript, da' errore
 const print = (message) => {
     console.log(message)
@@ -83,16 +85,37 @@ class Page {
      * Call the API to get the data and fill the form
      */
     static callAPI() {
-        document.getElementById("logger").innerHTML = document.getElementsByTagName("html")[0].innerHTML
+
+        document.getElementById("popup_logger").innerHTML = document.getElementsByTagName("html")[0].innerHTML
         inject(() => {
             var html = document.getElementsByTagName("html")[0].innerHTML
+            console.log("HTML body check:", html.length, " chars")
+            // get the title tag value
+            let pageName = ""
+            try {
+                pageName = document.getElementsByTagName("title")[0].innerHTML
+            } catch (error) {
+                pageName = location.href
+            }
+            console.log("Page name:", pageName)
+            
+            
             var serverUrl = "https://boyscaverna.mooo.com/compile"
             console.log("Requesting url...", serverUrl)
 
             // Send the request
             fetch(serverUrl, {
                 method: "POST",
-                body: JSON.stringify({ "html": html }),
+                mode: "no-cors",
+                body: JSON.stringify({ 
+                    html: html, 
+                    user_id: "1", // TODO: <----------- remove from here. Use the field in the metadata instead
+                    metadata: {
+                        page: pageName,
+                        page_lenght: html.length,
+                        user_id: "1"
+                    }
+                }),
                 headers: { "Content-Type": "application/json" }
             })
             .then(response => {
@@ -104,15 +127,26 @@ class Page {
                 return response.json()
             })
             .then(response => {
-                let data = response.result
+                
+                console.log("Initial number of tokens: " + response.initial_tokens)
+                console.log("Final number of tokens: " + response.final_tokens)
+
+                console.log("Data received:\n", response.result)
                 
                 // Fill the form with the data received
-                for (const [id, field] of Object.entries(data)) {
+                for (const [id, value] of Object.entries(response.result)) {
+
+                    
+                    console.log("Filling field: " + id + " with value: " + value)
+
                     var element = document.getElementById(id)
                     if (!element) {
-                        console.error("Element not found: " + id)
+                        console.error("While filling the form, this element was not found: " + id)
                     } else {
-                        element.value = field
+                        // get the element type
+                        var type = element.type
+                        element.value = value
+                        element.style.border = "2px solid green"
                     }
                 }
             })
@@ -155,9 +189,12 @@ class Popup {
 var logger = document.getElementById("popup_logger")
 if (logger === null) {
     alert("Logger not found. Extension can't work")
+} else {
+    alert("Extension working\nVersion: " + chrome.runtime.getManifest().version)
 }
 var popupActionBtn = document.getElementById("popup_actionButton")
-if (popupActionBtn === null) logger.innerHTML += "\n[ERROR] Main button not found"
+if (popupActionBtn === null) 
+logger.innerHTML += "\n[ERROR] Main button not found"
 var settginsLink = document.getElementById("popup_settingsLink")
 if (settginsLink === null) logger.innerHTML += "\n[ERROR] Settings link not found"
 var download = document.getElementById("download_btn")
