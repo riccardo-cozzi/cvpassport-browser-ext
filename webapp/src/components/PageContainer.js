@@ -10,45 +10,82 @@ import HelpIcon from '@mui/icons-material/Help';
 import ProfilePage from '../pages/ProfilePage';
 import SettingsPage from '../pages/SettingsPage';
 import AboutPage from '../pages/AboutPage';
-
+import Grid from '@mui/material/Grid';
+import Drawer from '@mui/material/Drawer';
+import { Button } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 export default function PageContainer() {
   const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+ 
+  const handleChangePage = (event, newValue) => {
     setValue(newValue);
   };
 
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  }
+
   return (
     <>
-    <Box bgcolor={"#0585fc"} width={"100%"} padding={"10px 50px 10px 50px"}>
-      <Typography variant="h4" component="div" gutterBottom>
-        CVPassport
-      </Typography>
-    </Box>
 
-    <Box
-      sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', width: '100%' }}
-    >
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider' }}
-      >
-        <Tab label="Profile"  icon={<AssignmentIndIcon />}/>
-        <Tab label="Settings" icon={<SettingsIcon />}/>
-        <Tab label="Info"     icon={<HelpIcon />}/>
-       
-      </Tabs>
-      { value == 0 ? <ProfilePage /> : null }
-      { value == 1 ? <SettingsPage /> : null }
-      { value == 2 ? <AboutPage /> : null }
-      
+    {/* APP bar stick to the top */}
+    <Box sx={{ flexGrow: 1, width:"100%" }}>
+        
+        
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', bgcolor: '#0585fc'}}>
+          <Button color="primary" variant='contained' onClick={toggleDrawer}>
+            <MenuIcon />
+          </Button>
+          <Typography variant="h4" component="div" gutterBottom>
+            CVPassport
+          </Typography>
+        </Box>
+
+          
+
+          
     </Box>
-    </>
+ 
+    {/* Page */}
+    <Grid container spacing={2}>
+
+    {/* Menu */}
+    <Drawer
+      anchor="left"
+      open={drawerOpen}
+      onClose={toggleDrawer}
+    >
+      <Box sx={{width: 200, marginTop:5}}>
+        <Tabs
+          orientation="vertical"
+          value={value}
+          onChange={handleChangePage}
+          aria-label="Vertical tabs example"
+          sx={{ borderRight: 1, borderColor: 'divider' }}
+        >
+          <Tab icon={<AssignmentIndIcon />} label="Profile" />
+          <Tab icon={<SettingsIcon />} label="Settings" />
+          <Tab icon={<HelpIcon />} label="About" />
+        </Tabs>
+      </Box>
+    </Drawer>
+
+    {/* Content */}
+    <Grid item xs={11}>
+      <Box sx={{padding:10, top:10}}>
+        { value == 0 ? <ProfilePage /> : null }
+        { value == 1 ? <SettingsPage /> : null }
+        { value == 2 ? <AboutPage /> : null }
+      </Box>
+    </Grid>  
+
+  </Grid>  
+
     
+
+  </>
   );
 }

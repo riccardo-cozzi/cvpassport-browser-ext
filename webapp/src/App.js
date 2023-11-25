@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import PageContainer from './components/PageContainer';
-import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
