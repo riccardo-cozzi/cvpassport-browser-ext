@@ -4,9 +4,12 @@ import Grid from '@mui/material/Grid';
 import { useState, useEffect} from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { setUserData, getUserData } from "../api";
+import { apiSetUserData, apiGetUserData } from "../api";
 
 const PersonalDataPanel = () => {
+
+
+  const [userId, setUserId] = useState(localStorage.getItem('user_id'));
 
   // PERSONAL INFORMATION
   const [personalData, setPersonalData] = useState({
@@ -15,6 +18,9 @@ const PersonalDataPanel = () => {
     surname: '',
     age: '',
     homeAddress: '',
+    homeCity: '',
+    homeState: '',
+    homePostalCode: '',
     workAddress: '',
     phoneNumber: '',
     emailAddress: '',
@@ -31,9 +37,11 @@ const PersonalDataPanel = () => {
     familiarsWorkingThere: '',
   });
 
+  const [updated, setUpdated] = useState(false);
 
+  // Get user data from server
   useEffect(() => {
-    getUserData()
+    apiGetUserData(userId)
     .then((data) => {
       let userPersonalData = {}
       for (let key in data) {
@@ -50,13 +58,27 @@ const PersonalDataPanel = () => {
 
 
   const handleChangePersonalData = (field) => (event) => {
+    if (updated === false) {
+      setUpdated(true);
+    }
     setPersonalData({ ...personalData, [field]: event.target.value });
   };
+
+
+  const handleChangeUserID = (event) => {
+    setUserId(event.target.value);
+    console.log("changed user id in local storage:", event.target.value);
+    localStorage.setItem('user_id', event.target.value);
+  }
+
+  
+
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    setUserData(personalData)
+    apiSetUserData(personalData)
     .then((data) => {
       console.log("response", data);
     })
@@ -65,10 +87,12 @@ const PersonalDataPanel = () => {
     });
   };
 
+
+
   const handleGetData = (event) => {
     event.preventDefault();
     
-    getUserData()
+    apiSetUserData()
     .then((data) => {
       console.log("response", data);
     })
@@ -90,6 +114,11 @@ const PersonalDataPanel = () => {
             <Typography variant="h4" component="div" gutterBottom>
               Personal information
             </Typography>
+          </Grid>
+
+          {/* user id */}
+          <Grid item xs={12}>
+            <TextField label="User ID" fullWidth value={userId} onChange={handleChangeUserID} />
           </Grid>
 
           {/* Name */}
@@ -123,8 +152,23 @@ const PersonalDataPanel = () => {
           </Grid>
 
           {/* Home Address */}
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField label="Home Address" fullWidth value={personalData.homeAddress} onChange={handleChangePersonalData('homeAddress')} />
+          </Grid>
+
+          {/* Home City */}
+          <Grid item xs={3}>
+            <TextField label="Home City" fullWidth value={personalData.homeCity} onChange={handleChangePersonalData('homeCity')} />
+          </Grid>
+
+          {/* Home State */}
+          <Grid item xs={3}>
+            <TextField label="Home State" fullWidth value={personalData.homeState} onChange={handleChangePersonalData('homeState')} />
+          </Grid>
+
+          {/* Home Postal Code */}
+          <Grid item xs={2}>
+            <TextField label="Home Postal Code" fullWidth value={personalData.homePostalCode} onChange={handleChangePersonalData('homePostalCode')} />
           </Grid>
 
           {/* Work Address */}
@@ -192,13 +236,13 @@ const PersonalDataPanel = () => {
 
 
 
-          {/* ----------------------------- SUBMIT ----------------------------- */}
+        {/* ----------------------------- SUBMIT ----------------------------- */}
        
         <Box sx={{display:'flex', justifyContent:'right'}}> 
           <Button sx={{margin:10, width:300, height:50, fontSize:20}} 
                   type="submit" variant="contained" color="primary"
                   onClick={handleSubmit}
-                  
+                  disabled={!updated}
           >
             Save
           </Button>

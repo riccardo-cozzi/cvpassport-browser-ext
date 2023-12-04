@@ -1,10 +1,11 @@
 import { Box, Paper, Typography } from "@mui/material";
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { apiGetUserData } from "../api";
 
 
 const EducationHistoryPanel = () => {
@@ -43,6 +44,26 @@ const EducationHistoryPanel = () => {
     console.log("payload for EducationalHistory", payload);
     // Inserisci qui la logica per inviare i dati, ad esempio a un server
   };
+
+
+  // Get user data from server
+  useEffect(() => {
+    apiGetUserData()
+    .then((data) => {
+      console.log("data", data);
+      let userEducationHistory = []
+      if (data.educationHistory) {
+        userEducationHistory = data.educationHistory;
+      } else {
+        console.log("No education history found");
+      }
+      
+      setEducationHistory(userEducationHistory);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }, []);
 
 
   return (

@@ -6,7 +6,11 @@ const SET_USER_DATA         = DOMAIN + 'set_user_data'
 const READ_USER_DATA        = DOMAIN + 'get_user_data'
 
 
-export const setUserData = (data) => {
+export const apiSetUserData = (data) => {
+
+    // get user id from local storage
+    let user_id = localStorage.getItem('user_id')
+
     let request = {
         method: 'POST',
         headers: {
@@ -14,7 +18,7 @@ export const setUserData = (data) => {
             
         },
         body: JSON.stringify({
-            "user_id": "1", //localStorage.getItem('user_id'), 
+            "user_id": localStorage.getItem('user_id'), 
             "user_data": map_data_to_schema(data)
         })
     }
@@ -22,8 +26,8 @@ export const setUserData = (data) => {
     return fetch(SET_USER_DATA, request)
 }
 
-export const getUserData = () => {
-    let url = `${READ_USER_DATA}/1`
+export const apiGetUserData = (user_id) => {
+    let url = `${READ_USER_DATA}/${user_id}`
     console.log(url);
     return fetch(url)
             .then(response => response.json())

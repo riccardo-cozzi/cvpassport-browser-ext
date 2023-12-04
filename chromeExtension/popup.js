@@ -106,7 +106,7 @@ class Page {
             // Send the request
             fetch(serverUrl, {
                 method: "POST",
-                mode: "no-cors",
+                
                 body: JSON.stringify({ 
                     html: html, 
                     user_id: "1", // TODO: <----------- remove from here. Use the field in the metadata instead
@@ -130,11 +130,22 @@ class Page {
                 
                 console.log("Initial number of tokens: " + response.initial_tokens)
                 console.log("Final number of tokens: " + response.final_tokens)
-
                 console.log("Data received:\n", response.result)
-                
+                let result = response.result
+
+                // check if result is a json 
+                if (typeof result === 'string' || result instanceof String) {
+                    result = JSON.parse(result)
+                }
+
+                // Check if the result is empty
+                if (Object.keys(result).length === 0 && result.constructor === Object) {
+                    console.log("Empty result")
+                    return
+                }
+
                 // Fill the form with the data received
-                for (const [id, value] of Object.entries(response.result)) {
+                for (const [id, value] of Object.entries(result)) {
 
                     
                     console.log("Filling field: " + id + " with value: " + value)

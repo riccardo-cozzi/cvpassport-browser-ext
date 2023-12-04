@@ -12,6 +12,12 @@
   
   <button id="popup_fillFieldButton">Fill the field</button>
 
+  User ID
+  <select onchange="changeID">
+    <option value="1">1</option>
+    <option value="2">2</option>
+  </select>
+
   <br><br><br>
   <button id="popup_actionButton">Request to server</button>
   
@@ -24,6 +30,14 @@
 </body>
 
 <script src="popup.js"></script>
+
+<script>
+  // set new id in localstorage
+  function changeID() {
+    var newID = document.getElementById("popup_userID").value;
+    localStorage.setItem("userID", newID);
+  }
+</script>
 
 
 </html>

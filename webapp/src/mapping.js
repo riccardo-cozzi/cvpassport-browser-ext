@@ -6,6 +6,9 @@ const database_schema = {
     "age": "age",
     "gender": "gender",
     "homeAddress": "home_address",
+    "homeCity": "home_city",
+    "homeState": "home_state",
+    "homePostalCode": "home_postal_code",
     "workAddress": "work_address",
     "phoneNumber": "phone_number",
     "emailAddress": "email_address",
@@ -52,14 +55,12 @@ const database_schema = {
 export function map_data_to_schema(data) {
     let mapped_data = {};
     for (let key in data) {
-        if (data[key] !== "")
-            mapped_data[database_schema[key]] = data[key];
+        mapped_data[database_schema[key]] = data[key];
     }
     return mapped_data;
 }
 
 export function map_schema_to_data(data) {
-    console.log("data", data);
     // invert the dictionary to get the value-key
     let mapped_data = {};
     let inverted_database_schema = {};
